@@ -8,6 +8,7 @@ class Router {
 static array $routes = [];
 
 static public function generateRoutes(): void {
+    $method = $_SERVER['REQUEST_METHOD'];
     $json = file_get_contents('php://input');
 
     $data = json_decode($json,true);
@@ -15,9 +16,18 @@ static public function generateRoutes(): void {
     self::addRoute('/api/v1/notebook/','Controller@getAllLines');
     
     # Метод для отображения одной записи из списка (POST и GET)
-    self::addRoute('/api/v1/notebook/'.$data['id'],'Controller@getLine');
+    if($method=="GET") {
+        self::addRoute('/api/v1/notebook?id='.$_GET['id'],'Controller@getLine');
+    }
+    if($method=="POST") {
+        self::addRoute('/api/v1/notebook/'.$data['id'],'Controller@getLineByPost');
+    }
 
     # Метод для удаления записи из списка (DELETE запрос)
+    if($method=="DELETE") {
+        self::addRoute('/api/v1/notebook/'.$data['id'],'Controller@deleteLine');
+    }
+
 }
 
     # Функция для добавления пути в массив
@@ -54,16 +64,12 @@ static public function generateRoutes(): void {
     static public function get($uri): void {
 
         $method = $_SERVER['REQUEST_METHOD'];
-        
         $uri = $_SERVER['REQUEST_URI'];
-
         $checkArray = self::searchInRoutes($uri);
         if($checkArray[0]['check']) {
 
             $controllerPath = 'Controllers';
             
-            if(($method == 'GET')||($method == 'POST')) {
-                
                 $controller = explode('@', $checkArray[0]['move'])[0];
                 $method = explode('@', $checkArray[0]['move'])[1];
 
@@ -72,7 +78,6 @@ static public function generateRoutes(): void {
                 $objectController = new $controller;
 
                 $objectController->$method();
-            } 
         }
     }
 }

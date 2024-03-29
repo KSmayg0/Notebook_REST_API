@@ -21,7 +21,7 @@ class Model {
 
     public function getAllLines() {
 
-        $query='SELECT * FROM Notebook;';
+        $query="SELECT * FROM `Notebook`;";
         $db = $this->getDatabase()->getConnection();
         try {
             $db->beginTransaction();
@@ -37,8 +37,29 @@ class Model {
     }
 
     public function getLine($line) {
-        
+
         $query = "SELECT * FROM `Notebook` WHERE id=:id ;";
+        $db = $this->getDatabase()->getConnection();
+        try {
+            $req = $db->prepare($query);
+
+            $req->bindValue(':id', $line, PDO::PARAM_STR_CHAR);
+            $req->execute();
+
+            $db->beginTransaction();
+
+            $db->commit();
+
+        } catch (PDOException $e) {
+            $db->rollBack();
+            echo $e->getMessage();
+        }
+        return $req->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function deleteLine($line) {
+
+        $query = "DELETE FROM `Notebook` WHERE id=:id ;";
         $db = $this->getDatabase()->getConnection();
         try {
             $req = $db->prepare($query);
