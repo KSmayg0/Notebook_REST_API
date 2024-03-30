@@ -9,6 +9,8 @@ static array $routes = [];
 
 static public function generateRoutes(): void {
     $method = $_SERVER['REQUEST_METHOD'];
+
+    # Получаем id записи в json
     $json = file_get_contents('php://input');
 
     $data = json_decode($json,true);
@@ -16,10 +18,10 @@ static public function generateRoutes(): void {
     self::addRoute('/api/v1/notebook/','Controller@getAllLines');
     
     # Метод для отображения одной записи из списка (POST и GET)
-    if($method=="GET") {
-        self::addRoute('/api/v1/notebook?id='.$_GET['id'],'Controller@getLine');
-    }
-    if($method=="POST") {
+    // if($method=="GET") {
+    //     self::addRoute('/api/v1/notebook?id='.$_GET['id'],'Controller@getLine');
+    // }
+    if(($method=="POST")||($method=="GET")) {
         self::addRoute('/api/v1/notebook/'.$data['id'],'Controller@getLineByPost');
     }
 
@@ -38,7 +40,7 @@ static public function generateRoutes(): void {
             'move'=>$move
         );
     }
-
+    # Функция поиска пути в массиве
     static function searchInRoutes($uri): array {
 
         $checkArray = array();

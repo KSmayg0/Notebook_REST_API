@@ -14,11 +14,12 @@ class Model {
     public function __construct(){
         $this->database = new Database();
     }
+    # Подключение к бд
     public function getDatabase(): Database {
 
         return $this->database;
     }
-
+    # Отображение всех записей
     public function getAllLines() {
 
         $query="SELECT * FROM `Notebook`;";
@@ -35,7 +36,7 @@ class Model {
        return $req->fetchAll(PDO::FETCH_ASSOC);
 
     }
-
+    # Отображение одной записи
     public function getLine($line) {
 
         $query = "SELECT * FROM `Notebook` WHERE id=:id ;";
@@ -56,7 +57,7 @@ class Model {
         }
         return $req->fetchAll(PDO::FETCH_ASSOC);
     }
-
+    # Удаление записи
     public function deleteLine($line) {
 
         $query = "DELETE FROM `Notebook` WHERE id=:id ;";

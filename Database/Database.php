@@ -11,7 +11,7 @@ class Database {
     public function __construct() {
 
     }
-
+    # Подключение к базе данных
     public function getConnection() {
 
         try{
